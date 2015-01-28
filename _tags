@@ -1,0 +1,2 @@
+<**/*.ml> : package(pprint)
+<**/*.byte> : package(pprint)
