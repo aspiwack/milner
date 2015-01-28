@@ -1,0 +1,6 @@
+#emacs
+*~
+
+#ocamlbuild
+_build
+*.byte
