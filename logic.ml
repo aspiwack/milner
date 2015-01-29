@@ -26,13 +26,13 @@ module Tactic : sig
   val elim : formula -> tactic
 
 end = struct
-  type thm = goal
+  type thm = goal * proof
   type validation = thm list -> thm
   type tactic = goal -> (goal list * validation)
 
   let id_proof (gamma,c) [] =
     assert (List.mem c gamma);
-    (gamma,c)
+    (gamma,c) , Id
   let id (gamma,c) =
     if List.mem c gamma then ([] , id_proof (gamma,c))
     else failwith "Not an assumption"
@@ -51,19 +51,19 @@ end = struct
       List.iteri (fun j a -> r := a::!r ; if j=i-1 then r := x::!r) l;
       List.rev !r
 
-  let weak_proof i a [(gamma,b)] = ( add i a gamma , b )
+  let weak_proof i a [(gamma,b),pr] = ( add i a gamma , b ) , Weak(i,pr)
   let weak i (gamma,a) =
     match remove i gamma with
     | (Some b,gamma') -> ( [(gamma',a)] , weak_proof i b )
     | _ -> failwith"Not a hypothesis"
 
-  let intro_proof [(a::gamma,b)] = ( gamma , Impl(a,b) )
+  let intro_proof [(a::gamma,b),pr] = ( gamma , Impl(a,b) ) , Intro pr
   let intro = function
     | (gamma,Impl(a,b)) -> ( [(a::gamma,b)] , intro_proof )
     | _ -> failwith "Not an implication"
 
   let elim_proof = function
-    | [(gamma,Impl(a,b));(gamma',a')] when a=a' && gamma=gamma' -> (gamma,b)
+    | [(gamma,Impl(a,b)),pr1;(gamma',a'),pr2] when a=a' && gamma=gamma' -> (gamma,b) , Elim(a,pr1,pr2)
   let elim a (gamma,b) =
     ( [(gamma,Impl(a,b));(gamma,a)] , elim_proof )
 
