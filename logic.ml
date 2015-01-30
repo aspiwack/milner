@@ -87,14 +87,11 @@ end = struct
     | _ -> failwith"Not a hypothesis"
 
   let intro_proof [(a::gamma,b),pr] = ( gamma , Impl(a,b) ) , Intro pr
-  let intro = function
-    | (gamma,Impl(a,b)) -> ( [(a::gamma,b)] , intro_proof )
-    | _ -> failwith "Not an implication"
+  let intro (gamma,Impl(a,b)) = ( [(a::gamma,b)] , intro_proof )
 
   let elim_proof = function
     | [(gamma,Impl(a,b)),pr1;(gamma',a'),pr2] when a=a' && gamma=gamma' -> (gamma,b) , Elim(a,pr1,pr2)
-  let elim a (gamma,b) =
-    ( [(gamma,Impl(a,b));(gamma,a)] , elim_proof )
+  let elim a (gamma,b) = ( [(gamma,Impl(a,b));(gamma,a)] , elim_proof )
 
 
   let rec format pr =
