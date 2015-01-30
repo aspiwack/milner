@@ -105,12 +105,12 @@ end = struct
     | Weak (i,pr) -> string"weak"^^blank 1^^OCaml.int i^^hardline^^format pr
     | Intro pr -> string"intro"^^hardline^^format pr
     | Elim(f,pr1,pr2) ->
-        group (string"elim"^^blank 1^^Goal.format_formula f)^^sub (format pr1)^^sub (format pr2)^^hardline
+        group (string"elim"^^blank 1^^Goal.format_formula f)^^sub (format pr1)^^sub (format pr2)
 
   let print (_,pr) =
     let open PPrint in
     let open PPrintEngine in
-    ToChannel.pretty 1. 120 stdout (format pr)
+    ToChannel.pretty 1. 120 stdout (format pr^^hardline)
 
 end
 
